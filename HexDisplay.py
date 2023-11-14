@@ -1,15 +1,17 @@
+from typing import List
+
 class HexDisplay:
     def __init__(self):
-        self.top = 0
-        self.top_left = 0
-        self.top_right = 0
-        self.mid = 0
-        self.bottom_left = 0
-        self.bottom_right = 0
-        self.bottom = 0
-        self.dec = 0
+        self.top:int = 0
+        self.top_left:int = 0
+        self.top_right:int = 0
+        self.mid:int = 0
+        self.bottom_left:int = 0
+        self.bottom_right:int = 0
+        self.bottom:int = 0
+        self.dec:int = 0
 
-        self.bits = [
+        self.bits: List[int] = [
             self.mid,
             self.top_left,
             self.top,
@@ -30,7 +32,7 @@ class HexDisplay:
                     6 (bottom)
                                 7 (decimal point)"""
 
-    def reset(self):
+    def reset(self) -> None:
         self.top = 0
         self.top_left = 0
         self.top_right = 0
@@ -40,7 +42,7 @@ class HexDisplay:
         self.bottom = 0
         self.dec = 0
 
-    def refresh(self):
+    def refresh(self) -> str:
         self.bits = [
             self.mid,
             self.top_left,
@@ -51,12 +53,12 @@ class HexDisplay:
             self.bottom_right,
             self.dec
         ]
-        binary = ""
+        binary:str = ""
         for bit in self.bits:
             binary += str(bit)
         return binary
     
-    def zero(self):
+    def zero(self) -> str:
         self.reset()
         self.top = 1
         self.top_left = 1
@@ -66,13 +68,13 @@ class HexDisplay:
         self.bottom = 1
         return self.refresh()
     
-    def one(self):
+    def one(self) -> str:
         self.reset()
         self.top_right = 1
         self.bottom_right = 1
         return self.refresh()
     
-    def two(self):
+    def two(self) -> str:
         self.reset()
         self.top = 1
         self.top_right = 1
@@ -81,7 +83,7 @@ class HexDisplay:
         self.bottom = 1
         return self.refresh()
     
-    def three(self):
+    def three(self) -> str:
         self.reset()
         self.top = 1
         self.top_right = 1
@@ -90,7 +92,7 @@ class HexDisplay:
         self.bottom = 1
         return self.refresh()
     
-    def four(self):
+    def four(self) -> str:
         self.reset()
         self.top_left = 1
         self.top_right = 1
@@ -98,7 +100,7 @@ class HexDisplay:
         self.bottom_right = 1
         return self.refresh()
     
-    def five(self):
+    def five(self) -> str:
         self.reset()
         self.top = 1
         self.top_left = 1
@@ -107,7 +109,7 @@ class HexDisplay:
         self.bottom = 1
         return self.refresh()
     
-    def six(self):
+    def six(self) -> str:
         self.reset()
         self.top = 1
         self.top_left = 1
@@ -117,14 +119,14 @@ class HexDisplay:
         self.bottom = 1
         return self.refresh()
     
-    def seven(self):
+    def seven(self) -> str:
         self.reset()
         self.top = 1
         self.top_right = 1
         self.bottom_right = 1
         return self.refresh()
     
-    def eight(self):
+    def eight(self) -> str:
         self.reset()
         self.top = 1
         self.top_left = 1
@@ -135,7 +137,7 @@ class HexDisplay:
         self.bottom = 1
         return self.refresh()
     
-    def nine(self):
+    def nine(self) -> str:
         self.reset()
         self.top = 1
         self.top_left = 1
@@ -144,7 +146,7 @@ class HexDisplay:
         self.bottom_right = 1
         return self.refresh()
     
-    def getDigit(self,digit: str):
+    def getDigit(self,digit: str) -> str:
         if digit == "0":
             return self.zero()
         elif digit == "1":
@@ -166,30 +168,30 @@ class HexDisplay:
         elif digit == "9":
             return self.nine()
     
-gen = HexDisplay()
-ROM_1 = {}
+gen:HexDisplay = HexDisplay()
+ROM_1:dict = {}
 for i in range(0,999):
     #convert i to a hex address of 4 digits
-    address = hex(i)[2:].zfill(4)
-    digits = [str(x) for x in str(i)]
+    address:str = hex(i)[2:].zfill(4)
+    digits: List[str] = [str(x) for x in str(i)]
     while len(digits) < 3:
         digits.insert(0,"0")
     #24 bit address
-    digit_1 = gen.getDigit(digits[0])
-    digit_2 = gen.getDigit(digits[1])
-    digit_3 = gen.getDigit(digits[2])
-    data = digit_1 + digit_2 + digit_3
+    digit_1:str = gen.getDigit(digits[0])
+    digit_2:str = gen.getDigit(digits[1])
+    digit_3:str = gen.getDigit(digits[2])
+    data:str = digit_1 + digit_2 + digit_3
     ROM_1[address] = data
 
 #output path 
-ROM_1_path = "hex_ROM_24bit"
+ROM_1_path:str = "hex_ROM_24bit"
 
-def writeROM(path, ROM):
+def writeROM(path:str, ROM:dict) -> None:
     with open(path, "w") as f:
         f.write("v3.0 hex words addressed\n")
         for address in ROM:
-            data = ROM[address]
-            hex_data = hex(int(data,2))[2:].zfill(4)
+            data:str = ROM[address]
+            hex_data:str = hex(int(data,2))[2:].zfill(4)
             f.write(f"{address}: {hex_data}\n")
 
 writeROM(ROM_1_path, ROM_1)
